@@ -1,1 +1,110 @@
 # Endeavor-Quiz
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ENDEAVOR Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 2em; }
+    .quiz-container { max-width: 600px; margin: auto; }
+    .question { font-size: 1.5em; margin-bottom: 1em; }
+    .answers button {
+      display: block;
+      margin: 0.5em auto;
+      padding: 1em;
+      width: 100%;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .correct { background-color: #4CAF50; color: white; }
+    .wrong { background-color: #f44336; color: white; }
+    .next-btn { margin-top: 1em; display: none; }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <button class="next-btn" id="nextBtn">Volgende vraag</button>
+  </div>
+
+  <script>
+    const quiz = [
+      {
+        question: "Wat is het doel van het ENDEAVOR-programma binnen EverGreen 2025?",
+        correct: "Digitale transformatie van de PtP-processen",
+        options: [
+          "Kostenbesparing door ontslagen",
+          "Digitale transformatie van de PtP-processen",
+          "Productinnovatie stimuleren",
+          "Nieuwe markten betreden"
+        ]
+      },
+      {
+        question: "Welk systeem wordt gebruikt als nieuw bestelsysteem voor non-product gerelateerde goederen en diensten?",
+        correct: "ZYCUS eProcurement",
+        options: ["SAP/SRM", "ZYCUS eProcurement", "Mendix", "HeiLite"]
+      },
+      {
+        question: "Wat is *niet* beïnvloed door de implementatie van ENDEAVOR?",
+        correct: "Invoice Management",
+        options: ["Invoice Management", "Non-product related ordering", "Contract Management", "C&TP Ordering"]
+      },
+      {
+        question: "Het ENDEAVOR-programma maakt maatwerk in het systeemontwerp mogelijk op basis van voorkeuren van de lokale OpCo.",
+        correct: "Niet waar",
+        options: ["Waar", "Niet waar"]
+      },
+      {
+        question: "Een van de doelstellingen van ENDEAVOR is het centraliseren van Indirect Purchase-to-Pay-processen via een cloudgebaseerd systeem.",
+        correct: "Waar",
+        options: ["Waar", "Niet waar"]
+      }
+    ];
+
+    let currentQuestion = 0;
+
+    function shuffle(array) {
+      return array.sort(() => Math.random() - 0.5);
+    }
+
+    function showQuestion() {
+      const q = quiz[currentQuestion];
+      document.getElementById("question").innerText = q.question;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      const shuffled = shuffle([...q.options]);
+
+      shuffled.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(opt, q.correct);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected, correct) {
+      const buttons = document.querySelectorAll("#answers button");
+      buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText === correct) btn.classList.add("correct");
+        else if (btn.innerText === selected) btn.classList.add("wrong");
+      });
+      document.getElementById("nextBtn").style.display = "inline-block";
+    }
+
+    document.getElementById("nextBtn").onclick = () => {
+      currentQuestion++;
+      if (currentQuestion < quiz.length) {
+        showQuestion();
+        document.getElementById("nextBtn").style.display = "none";
+      } else {
+        document.querySelector(".quiz-container").innerHTML = "<h2>Quiz voltooid! 🎉</h2>";
+      }
+    };
+
+    showQuestion();
+  </script>
+</body>
+</html>
